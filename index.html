@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Spoke 'n Word</title>
+    <link rel="stylesheet" href="styles.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+</head>
+<body>
+    <header>
+        <h1>Spoke 'n Word</h1>
+    </header>
+
+    <!-- FILTER SECTION -->
+    <section id="filters" class="filters">
+        <input id="searchInput" placeholder="Search events…" />
+        <input id="dateFilter" type="date" />
+        <input id="timeFilter" type="time" />
+        <input id="locationFilter" placeholder="Filter by location…" />
+        <input id="hostFilter" placeholder="Filter by host…" />
+        <input id="tagFilter" placeholder="Filter by tag…" />
+    </section>
+
+    <!-- EVENT TABLE -->
+    <section id="eventList" class="event-list">
+        <table>
+            <thead>
+                <tr>
+                    <th>Date</th>
+                    <th>Time</th>
+                    <th>Name</th>
+                    <th>Location</th>
+                    <th>Host</th>
+                    <th>Description</th>
+                    <th>Tags</th>
+                    <th>Link</th>
+                </tr>
+            </thead>
+            <tbody id="tableBody"></tbody>
+        </table>
+    </section>
+
+    <script src="script.js"></script>
+</body>
+</html>
