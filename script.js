@@ -1,94 +1,95 @@
-// ===== CONFIG: Your published Google Sheet CSV URL =====
-const csvUrl = "https://docs.google.com/spreadsheets/d/e/2PACX-1vQ-_vMfpUnY0zdDCYpjKugwXEGuWMn42WSOyI3UqVeLQgzbCMJsg7U4xgkISXtCymLKVGGSB5TuzITA/pub?output=csv"; // <-- Replace this
+// ---- SETTINGS ----
+const SHEET_ID = "1mxP2-lY1-fhWoHr_LOBLFw4OXnEHmhC8yuqZraPCGdM"; 
+const SHEET_NAME = "Sheet1"; // Change if your tab is named something else
 
-// ===== DOM ELEMENTS =====
-const tableBody = document.getElementById("tableBody");
-const searchInput = document.getElementById("searchInput");
-const dateFilter = document.getElementById("dateFilter");
-const timeFilter = document.getElementById("timeFilter");
-const locationFilter = document.getElementById("locationFilter");
-const hostFilter = document.getElementById("hostFilter");
-const tagFilter = document.getElementById("tagFilter");
+// Google Visualization API CSV endpoint
+const SHEET_URL = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:csv&sheet=${SHEET_NAME}`;
 
-let events = [];
+document.addEventListener("DOMContentLoaded", () => {
+    loadEvents();
+});
 
-// ===== FETCH AND PARSE CSV =====
+// Load & parse CSV using Google Visualization API
 async function loadEvents() {
-    const response = await fetch(csvUrl);
-    const csvText = await response.text();
+    try {
+        const response = await fetch(SHEET_URL);
+        const csvText = await response.text();
+        const events = parseCSV(csvText);
 
-    const lines = csvText.trim().split("\n");
-    const headers = lines.shift().split(",").map(h => h.trim());
+        renderTable(events);
+        setupFilters(events);
 
-    events = lines.map(line => {
-        const values = line.split(",");
-        const obj = {};
-        headers.forEach((h, i) => obj[h] = values[i] || "");
-        return obj;
-    });
-
-    renderEvents(events);
+    } catch (err) {
+        console.error("Error loading sheet:", err);
+        document.getElementById("event-table-body").innerHTML =
+            `<tr><td colspan="8" style="color:red;">Failed to load events.</td></tr>`;
+    }
 }
 
-// ===== RENDER EVENTS =====
-function renderEvents(list) {
-    tableBody.innerHTML = "";
+// Convert CSV → array of objects
+function parseCSV(csv) {
+    const lines = csv.split("\n").map(l => l.trim()).filter(l => l.length > 0);
+    const headers = lines[0].split(",").map(h => h.trim().toLowerCase());
 
-    list.forEach(e => {
+    const events = lines.slice(1).map(line => {
+        const values = line.split(/,(?=(?:[^"]*"[^"]*")*[^"]*$)/).map(v => v.replace(/"/g, ""));
+        let eventObj = {};
+        headers.forEach((h, i) => eventObj[h] = values[i] || "");
+        return eventObj;
+    });
+
+    return events;
+}
+
+// Render table rows
+function renderTable(events) {
+    const tbody = document.getElementById("event-table-body");
+    tbody.innerHTML = "";
+
+    events.forEach(ev => {
         const row = document.createElement("tr");
 
-        const cells = [
-            {label:"Date", value:e.date},
-            {label:"Time", value:e.time},
-            {label:"Name", value:e.name},
-            {label:"Location", value:e.location},
-            {label:"Host", value:e.host},
-            {label:"Description", value:e.description},
-            {label:"Tags", value:e.tags},
-            {label:"Link", value:`<a href="${e.link}" target="_blank">Event Link</a>`}
-        ];
+        row.innerHTML = `
+            <td>${ev.date}</td>
+            <td>${ev.time}</td>
+            <td>${ev.location}</td>
+            <td>${ev.name}</td>
+            <td>${ev.description}</td>
+            <td><a href="${ev.link}" target="_blank">Link</a></td>
+            <td>${ev.tags}</td>
+            <td>${ev.host}</td>
+        `;
 
-        cells.forEach(c => {
-            const td = document.createElement("td");
-            td.innerHTML = c.value;
-            td.setAttribute("data-label", c.label);
-            row.appendChild(td);
+        tbody.appendChild(row);
+    });
+}
+
+// Filtering logic
+function setupFilters(events) {
+    const inputs = document.querySelectorAll(".filter-input");
+
+    inputs.forEach(input => {
+        input.addEventListener("input", () => {
+            const filtered = filterEvents(events);
+            renderTable(filtered);
         });
-
-        tableBody.appendChild(row);
     });
 }
 
-// ===== FILTERING =====
-function filterEvents() {
-    let filtered = events;
+function filterEvents(events) {
+    const filters = {
+        date: document.getElementById("filter-date").value.toLowerCase(),
+        time: document.getElementById("filter-time").value.toLowerCase(),
+        location: document.getElementById("filter-location").value.toLowerCase(),
+        name: document.getElementById("filter-name").value.toLowerCase(),
+        description: document.getElementById("filter-description").value.toLowerCase(),
+        tags: document.getElementById("filter-tags").value.toLowerCase(),
+        host: document.getElementById("filter-host").value.toLowerCase(),
+    };
 
-    const searchTerm = searchInput.value.toLowerCase();
-    const dateVal = dateFilter.value;
-    const timeVal = timeFilter.value;
-    const loc = locationFilter.value.toLowerCase();
-    const host = hostFilter.value.toLowerCase();
-    const tag = tagFilter.value.toLowerCase();
-
-    filtered = filtered.filter(e => {
-        return (
-            (!searchTerm ||
-                e.name.toLowerCase().includes(searchTerm) ||
-                e.description.toLowerCase().includes(searchTerm)) &&
-            (!dateVal || e.date === dateVal) &&
-            (!timeVal || e.time >= timeVal) &&
-            (!loc || e.location.toLowerCase().includes(loc)) &&
-            (!host || e.host.toLowerCase().includes(host)) &&
-            (!tag || e.tags.toLowerCase().includes(tag))
-        );
-    });
-
-    renderEvents(filtered);
+    return events.filter(ev =>
+        Object.entries(filters).every(([field, value]) =>
+            ev[field]?.toLowerCase().includes(value)
+        )
+    );
 }
-
-// ===== EVENT LISTENERS =====
-[searchInput, dateFilter, timeFilter, locationFilter, hostFilter, tagFilter]
-    .forEach(el => el.addEventListener("input", filterEvents));
-
-// ===== INITIAL LOAD =====
-loadEvents();
