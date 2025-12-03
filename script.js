@@ -1,6 +1,6 @@
 // ---- SETTINGS ----
 const SHEET_ID = "1mxP2-lY1-fhWoHr_LOBLFw4OXnEHmhC8yuqZraPCGdM"; 
-const SHEET_NAME = "Sheet1"; // Change if your tab is named something else
+const SHEET_NAME = "Events"; // Change if your tab is named something else
 
 // Google Visualization API CSV endpoint
 const SHEET_URL = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:csv&sheet=${SHEET_NAME}`;
@@ -93,3 +93,4 @@ function filterEvents(events) {
         )
     );
 }
+
