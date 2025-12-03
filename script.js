@@ -1,6 +1,6 @@
 // ---- SETTINGS ----
 const SHEET_ID = "1mxP2-lY1-fhWoHr_LOBLFw4OXnEHmh1mxP2-lY1-fhWoHr_LOBLFw4OXnEHmhC8yuqZraPCGdM";
-const SHEET_NAME = "Sheet1";
+const SHEET_NAME = "Events";
 
 // Google Visualization API safe CSV endpoint
 const SHEET_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vQ-_vMfpUnY0zdDCYpjKugwXEGuWMn42WSOyI3UqVeLQgzbCMJsg7U4xgkISXtCymLKVGGSB5TuzITA/pub?output=csv";
