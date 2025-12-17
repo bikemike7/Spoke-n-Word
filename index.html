@@ -13,31 +13,36 @@
 </header>
 
 <section id="filters">
-    <h2>Filter Events</h2>
+    <div class="filters-bar">
+        <select id="filter-date" class="filter-select">
+            <option value="">Date</option>
+        </select>
 
-    <div class="filter-row">
-        <label>Date:</label>
-        <select id="filter-date" class="filter-select"></select>
+        <select id="filter-time" class="filter-select">
+            <option value="">Time</option>
+        </select>
 
-        <label>Time:</label>
-        <select id="filter-time" class="filter-select"></select>
+        <select id="filter-location" class="filter-select">
+            <option value="">Location</option>
+        </select>
 
-        <label>Location:</label>
-        <select id="filter-location" class="filter-select"></select>
-    </div>
+        <select id="filter-name" class="filter-select">
+            <option value="">Name</option>
+        </select>
 
-    <div class="filter-row">
-        <label>Name:</label>
-        <select id="filter-name" class="filter-select"></select>
+        <select id="filter-tags" class="filter-select">
+            <option value="">Tags</option>
+        </select>
 
-        <label>Tags:</label>
-        <select id="filter-tags" class="filter-select"></select>
+        <select id="filter-host" class="filter-select">
+            <option value="">Host</option>
+        </select>
 
-        <label>Host:</label>
-        <select id="filter-host" class="filter-select"></select>
-    </div>
+        <button id="reset-filters">Reset</button>
 
-    <button id="reset-filters">Reset Filters</button>
+    <a href="https://docs.google.com/forms/d/e/1FAIpQLSecytwjFuGMaSWyyzpgxYQOCyYYVcOgmP_1-E0CmfXWss3YKw/viewform?usp=dialog" target="_blank">
+        <button id="submit-event">Submit an event</button>
+    </a>
 </section>
 
 <section id="event-table-section">
