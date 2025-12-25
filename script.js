@@ -40,6 +40,19 @@ function parseCSV(csv) {
         return obj;
     });
 }
+function filterFutureEvents(events) {
+    const today = new Date();
+    today.setHours(0, 0, 0, 0); // normalize to start of day
+
+    return events.filter(ev => {
+        if (!ev.date) return false;
+
+        const eventDate = new Date(ev.date);
+        if (isNaN(eventDate)) return false;
+
+        return eventDate >= today;
+    });
+}
 
 // Render event rows
 function renderTable(events) {
