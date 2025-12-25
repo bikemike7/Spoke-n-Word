@@ -16,10 +16,12 @@ async function loadEvents() {
         const response = await fetch(SHEET_URL);
         const csvText = await response.text();
         const events = parseCSV(csvText);
+        const futureEvents = filterFutureEvents(events);
 
-        renderTable(events);
-        populateDropdowns(events);
-        setupDropdownFiltering(events);
+renderTable(futureEvents);
+populateDropdowns(futureEvents);
+setupDropdownFiltering(futureEvents);
+
 
     } catch (err) {
         console.error("Error:", err);
