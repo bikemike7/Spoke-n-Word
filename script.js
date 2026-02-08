@@ -14,10 +14,18 @@ document.addEventListener("DOMContentLoaded", () => {
 // Load & parse CSV using Google Visualization API
 async function loadEvents() {
     try {
+        console.log("Fetching events from Google Sheets...");
         const response = await fetch(SHEET_URL);
         const csvText = await response.text();
+        console.log("CSV received, parsing...");
+
         const events = parseCSV(csvText);
-        allEvents = filterFutureEvents(events);
+        console.log(`Parsed ${events.length} total events`);
+
+        // TEMPORARY: Show all events for debugging (comment out filterFutureEvents)
+        // allEvents = filterFutureEvents(events);
+        allEvents = events; // Show ALL events
+        console.log(`Showing ${allEvents.length} events`);
 
         renderTable(allEvents);
         setupFilters();
@@ -25,7 +33,7 @@ async function loadEvents() {
     } catch (err) {
         console.error("Error loading sheet:", err);
         document.getElementById("event-table-body").innerHTML =
-            `<tr><td colspan="8" style="color:red;">Failed to load events.</td></tr>`;
+            `<tr><td colspan="8" style="color:red;">Failed to load events. Error: ${err.message}</td></tr>`;
     }
 }
 
@@ -52,8 +60,15 @@ function filterFutureEvents(events) {
     return events.filter(ev => {
         if (!ev.date) return false;
 
-        // Parse the date (assumes format like MM/DD/YYYY or YYYY-MM-DD)
+        // Parse the date (handles MM/DD/YYYY, M/D/YYYY, and YYYY-MM-DD formats)
         const eventDate = new Date(ev.date);
+
+        // Check if date is valid
+        if (isNaN(eventDate.getTime())) {
+            console.warn(`Invalid date format: ${ev.date}`);
+            return false;
+        }
+
         return eventDate >= today;
     });
 }
