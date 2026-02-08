@@ -41,14 +41,21 @@ async function loadEvents() {
 function parseCSV(csv) {
     const lines = csv.split("\n").map(l => l.trim()).filter(l => l.length > 0);
     const headers = lines[0].split(",").map(h => h.trim().replace(/"/g, "").toLowerCase());
+    console.log("CSV headers:", headers);
 
-    const events = lines.slice(1).map(line => {
+    const events = lines.slice(1).map((line, index) => {
         const values = line.split(/,(?=(?:[^"]*"[^"]*")*[^"]*$)/).map(v => v.replace(/^"|"$/g, ""));
         let eventObj = {};
         headers.forEach((h, i) => eventObj[h] = values[i] || "");
+
+        if (index === 0) {
+            console.log("First event object:", eventObj);
+        }
+
         return eventObj;
     });
 
+    console.log(`Total events parsed: ${events.length}`);
     return events;
 }
 
@@ -75,13 +82,23 @@ function filterFutureEvents(events) {
 
 // Render table rows - column order matches HTML headers
 function renderTable(events) {
+    console.log(`renderTable called with ${events.length} events`);
     const tbody = document.getElementById("event-table-body");
+
+    if (!tbody) {
+        console.error("Could not find table body element!");
+        return;
+    }
+
     tbody.innerHTML = "";
 
     if (events.length === 0) {
+        console.log("No events to display");
         tbody.innerHTML = '<tr><td colspan="8" style="text-align:center;">No events found.</td></tr>';
         return;
     }
+
+    console.log("Rendering events...");
 
     events.forEach(ev => {
         const row = document.createElement("tr");
