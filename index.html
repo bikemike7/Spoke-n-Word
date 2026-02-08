@@ -9,16 +9,18 @@
 <body>
     <header>
         <h1>Spoke 'n Word</h1>
+        <p class="tagline">Seattle's Bike Event Hub</p>
+        <a href="https://docs.google.com/forms/d/1RKm1U2Yxw-caiE75aEqWunGBRUsiPu7DSvT2B4Bp9HY/viewform" target="_blank" class="submit-btn">Submit Your Event</a>
     </header>
 
     <!-- FILTER SECTION -->
     <section id="filters" class="filters">
-        <input id="searchInput" placeholder="Search events…" />
-        <input id="dateFilter" type="date" />
-        <input id="timeFilter" type="time" />
-        <input id="locationFilter" placeholder="Filter by location…" />
-        <input id="hostFilter" placeholder="Filter by host…" />
-        <input id="tagFilter" placeholder="Filter by tag…" />
+        <input id="filter-search" class="filter-input" placeholder="Search events…" />
+        <input id="filter-date" class="filter-input" type="date" />
+        <input id="filter-time" class="filter-input" type="time" />
+        <input id="filter-location" class="filter-input" placeholder="Filter by location…" />
+        <input id="filter-host" class="filter-input" placeholder="Filter by host…" />
+        <input id="filter-tags" class="filter-input" placeholder="Filter by tag…" />
     </section>
 
     <!-- EVENT TABLE -->
@@ -36,7 +38,7 @@
                     <th>Link</th>
                 </tr>
             </thead>
-            <tbody id="tableBody"></tbody>
+            <tbody id="event-table-body"></tbody>
         </table>
     </section>
 
